@@ -6,8 +6,8 @@ import framework.model.GameTile;
 import java.awt.*;
 
 public class SameGameBoard implements GameBoard{
-    private int rows;
-    private int cols;
+    private final int rows = 15;
+    private final int cols = 25;
     private int difficulty;
     private GameTile[][] tiles;
     private final Color[] colors = { Color.MAGENTA, Color.CYAN, Color.DARK_GRAY, Color.ORANGE, Color.PINK};
@@ -43,12 +43,15 @@ public class SameGameBoard implements GameBoard{
     public void resetBoard() {
         initializeBoard(rows, cols, difficulty);
     }
-    
-    public SameGameBoard(int row, int col, int difficulty) {
+
+    public Color getColor(int index) {
+        if (index >= 0 && index < colors.length) return colors[index];
+        return null;
+    }
+
+    public SameGameBoard(int difficulty) {
         if (difficulty > 5) difficulty = 5;
         if (difficulty < 3) difficulty = 3;
-        this.rows = row;
-        this.cols = col;
         this.difficulty = difficulty;
         initializeBoard(rows, cols, difficulty);
     }

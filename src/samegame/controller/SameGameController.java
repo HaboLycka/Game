@@ -28,6 +28,10 @@ public class SameGameController implements GameController{
         if (e.getKeyCode() == KeyEvent.VK_C) {
             model.cheat();
         }
+
+        if (e.getKeyCode() == KeyEvent.VK_Z) {
+            model.undo();
+        }
     }
     
     public SameGameController(GameModel model, GameView view) {

@@ -10,7 +10,10 @@ public abstract class GameLaunchPage extends JFrame {
     JButton quitButton;
 
     JPanel textpanel;
-
+    
+    public abstract void startGame();
+    public abstract void loadGame();
+    
     public GameLaunchPage() {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,7 +69,5 @@ public abstract class GameLaunchPage extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
     }
-    
-    public void startGame() {}
-    protected void loadGame() {}
+
 }

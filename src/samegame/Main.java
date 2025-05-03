@@ -13,10 +13,13 @@ public class Main {
     public static void main(String[] args) {
         Color[] colors = {Color.MAGENTA, Color.CYAN, Color.DARK_GRAY};
 
-        SameGameBoard board = new SameGameBoard(15, 25, colors);
+        SameGameBoard board = new SameGameBoard(5, 5, colors);
         SameGameModel model = new SameGameModel(board);
         SameGameView view = new SameGameView(board);
+        SameGameConsoleView consoleview = new SameGameConsoleView(board);
+
         model.addObserver(view);
+        model.addObserver(consoleview);
         SameGameController controller = new SameGameController(model, view);
         
         view.addMouseListener(new MouseAdapter() {
@@ -24,6 +27,8 @@ public class Main {
                 controller.mouseInput(e);
             }
         });
+
+
         JFrame frame = new JFrame("SameGame Test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(view);

@@ -7,6 +7,4 @@ public interface GameView{
     int getWidth();
     int getTileSize();
 
-    void drawGrid(Graphics g);
-    void drawTiles(Graphics g);
 }

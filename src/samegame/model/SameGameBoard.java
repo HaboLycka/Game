@@ -9,6 +9,7 @@ public class SameGameBoard implements GameBoard{
     private int rows;
     private int cols;
     private GameTile[][] tiles;
+    private Color[] colors;
     
     @Override
     public int getRows() {
@@ -32,15 +33,19 @@ public class SameGameBoard implements GameBoard{
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 int randomnum = (int)(Math.random() * colors.length);
-                tiles[row][col] = new SameGameTile(colors[randomnum], randomnum);
+                tiles[row][col] = new SameGameTile(colors[randomnum], randomnum + 1);
             }
         }
     }
 
+    @Override
+    public void resetBoard() {
+        initializeBoard(rows, cols, colors);
+    }
     public SameGameBoard(int rows, int cols, Color[] colors) {
         this.rows = rows;
         this.cols = cols;
-
+        this.colors = colors;
         initializeBoard(rows, cols, colors);
     }
 }

@@ -48,7 +48,7 @@ public class SameGameView extends JPanel implements GameView, GameObserver{
     /**
      * Draws the grid lines
      */
-    @Override
+
     public void drawGrid(Graphics g) {
         g.setColor(Color.black);
 		
@@ -64,7 +64,6 @@ public class SameGameView extends JPanel implements GameView, GameObserver{
     /**
      * Fills in the grids with corresponding tile color
      */
-    @Override
     public void drawTiles(Graphics g) {
         for (int i = 0; i < board.getRows(); i++) {
             for (int j = 0; j < board.getCols(); j++) {
@@ -82,10 +81,10 @@ public class SameGameView extends JPanel implements GameView, GameObserver{
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
         drawGrid(g);
         drawTiles(g);
     }
-    
     public SameGameView(GameBoard board) {
         this.board = board;
         this.height = board.getRows() * tilesize;

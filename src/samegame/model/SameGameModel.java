@@ -39,6 +39,7 @@ public class SameGameModel implements GameModel{
         if (group.size() >= 2) {
             for (Point p : group) {
                 board.getTileAt(p.y, p.x).setColor(Color.WHITE);
+                board.getTileAt(p.y, p.x).setState(0);
             }
         }
         

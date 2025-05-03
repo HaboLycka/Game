@@ -1,6 +1,10 @@
 package framework.model;
 
-public interface GameBoard {
+import java.awt.Color;
 
-    void initializeBoard();
+public interface GameBoard {
+    int getRows();
+    int getCols();
+    GameTile getTileAt(int row, int col);
+    void initializeBoard(int rows, int cols, Color[] colors);
 }

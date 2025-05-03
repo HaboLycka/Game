@@ -1,12 +1,5 @@
 package samegame.view;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-
-import javax.swing.*;
-import java.awt.event.*;
-
 import framework.model.GameBoard;
 import framework.view.GameObserver;
 import framework.view.GameView;

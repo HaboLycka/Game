@@ -8,8 +8,9 @@ import java.awt.*;
 public class SameGameBoard implements GameBoard{
     private int rows;
     private int cols;
+    private int difficulty;
     private GameTile[][] tiles;
-    private Color[] colors;
+    private final Color[] colors = { Color.MAGENTA, Color.CYAN, Color.DARK_GRAY, Color.ORANGE, Color.PINK};
     
     @Override
     public int getRows() {
@@ -27,12 +28,12 @@ public class SameGameBoard implements GameBoard{
     }
 
     @Override
-    public void initializeBoard(int rows, int cols, Color[] colors) {
+    public void initializeBoard(int rows, int cols, int difficulty) {
         tiles = new GameTile[rows][cols];
-
+        // initialize the board by setting random
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                int randomnum = (int)(Math.random() * colors.length);
+                int randomnum = (int)(Math.random() * difficulty);
                 tiles[row][col] = new SameGameTile(colors[randomnum], randomnum + 1);
             }
         }
@@ -40,12 +41,15 @@ public class SameGameBoard implements GameBoard{
 
     @Override
     public void resetBoard() {
-        initializeBoard(rows, cols, colors);
+        initializeBoard(rows, cols, difficulty);
     }
-    public SameGameBoard(int rows, int cols, Color[] colors) {
-        this.rows = rows;
-        this.cols = cols;
-        this.colors = colors;
-        initializeBoard(rows, cols, colors);
+    
+    public SameGameBoard(int row, int col, int difficulty) {
+        if (difficulty > 5) difficulty = 5;
+        if (difficulty < 3) difficulty = 3;
+        this.rows = row;
+        this.cols = col;
+        this.difficulty = difficulty;
+        initializeBoard(rows, cols, difficulty);
     }
 }

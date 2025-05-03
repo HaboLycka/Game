@@ -1,6 +1,5 @@
 package framework.controller;
 
-import framework.model.GameModel;
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyEvent;
 

@@ -20,7 +20,15 @@ public class SameGameController implements GameController{
     }
 
     @Override
-    public void keyInput(KeyEvent e) {}
+    public void keyInput(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_R) {
+            model.restartGame();
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_C) {
+            model.cheat();
+        }
+    }
     
     public SameGameController(GameModel model, GameView view) {
         this.model = model;

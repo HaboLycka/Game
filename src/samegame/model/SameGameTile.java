@@ -28,10 +28,13 @@ public class SameGameTile implements GameTile{
         this.state = state;    
     }
     
+    @Override
+    public boolean isEmpty() {
+        return state == 0;
+    }
     public SameGameTile(Color c, int s) {
         this.color = c;
         this.state = s;
     }
-
 
 }

@@ -6,13 +6,13 @@ import java.awt.Graphics;
 
 import javax.swing.*;
 
-import framework.model.GameBoard;
+import framework.model.GameModel;
 import framework.view.GameObserver;
 import framework.view.GameView;
 
-public class SameGameView extends JPanel implements GameView, GameObserver{
+public class SameGameView extends JPanel implements GameView, GameObserver {
 
-    private GameBoard board;
+    private GameModel model;
     private int width;
     private int height;
     private int tilesize = 50;
@@ -49,14 +49,14 @@ public class SameGameView extends JPanel implements GameView, GameObserver{
      * Draws the grid lines
      */
 
-    public void drawGrid(Graphics g) {
+    private void drawGrid(Graphics g) {
         g.setColor(Color.black);
 		
-		for (int i = 0; i <= board.getRows(); i++) {
+		for (int i = 0; i <= model.getRows(); i++) {
 		    g.drawLine(0, tilesize * i, width, tilesize * i);
 		}
 
-		for (int j = 0; j <= board.getCols(); j++) {
+		for (int j = 0; j <= model.getCols(); j++) {
 		    g.drawLine(tilesize * j, 0, tilesize * j, height);
 		}
     }
@@ -64,10 +64,10 @@ public class SameGameView extends JPanel implements GameView, GameObserver{
     /**
      * Fills in the grids with corresponding tile color
      */
-    public void drawTiles(Graphics g) {
-        for (int i = 0; i < board.getRows(); i++) {
-            for (int j = 0; j < board.getCols(); j++) {
-                Color c = board.getTileAt(i, j).getColor();
+    private void drawTiles(Graphics g) {
+        for (int i = 0; i < model.getRows(); i++) {
+            for (int j = 0; j < model.getCols(); j++) {
+                Color c = model.getTileAt(i, j).getColor();
         
                 g.setColor(c.darker());
                 g.fillRect(j * tilesize, i * tilesize, tilesize, tilesize);
@@ -78,20 +78,25 @@ public class SameGameView extends JPanel implements GameView, GameObserver{
         }
     }
 
+    private void drawScore(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.drawString("Score: " + model.getScore(), 10, getHeight() - 10);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         drawGrid(g);
         drawTiles(g);
+        drawScore(g);
     }
-    public SameGameView(GameBoard board) {
-        this.board = board;
-        this.height = board.getRows() * tilesize;
-        this.width = board.getCols() * tilesize;
+
+    public SameGameView(GameModel model) {
+        this.model = model;
+        this.height = model.getRows() * tilesize;
+        this.width = model.getCols() * tilesize;
 
         this.setPreferredSize(new Dimension(width, height));
     }
-
-
 }

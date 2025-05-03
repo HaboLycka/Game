@@ -7,4 +7,5 @@ public interface GameTile {
     void setColor(Color color);
     int getState();
     void setState(int state);
+    boolean isEmpty();
 }

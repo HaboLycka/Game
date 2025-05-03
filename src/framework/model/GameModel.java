@@ -1,5 +1,7 @@
 package framework.model;
 
+import java.io.File;
+
 import framework.view.GameObserver;
 
 public interface GameModel {
@@ -7,6 +9,8 @@ public interface GameModel {
     void removeObserver(GameObserver observer);
     void notifyObservers();
     void restartGame();
+    void saveGame();
+    void loadGame(File f);
     int getRows();
     public int getCols();
     GameTile getTileAt(int row, int col);

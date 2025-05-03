@@ -6,6 +6,7 @@ import framework.model.GameTile;
 import framework.view.GameObserver;
 
 import java.awt.*;
+import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -27,9 +28,51 @@ public class SameGameModel implements GameModel{
 
     @Override
     public void notifyObservers() {
+        saveGame();
         for (GameObserver o : observers) {
             o.update();
         }
+    }
+
+    
+    @Override
+    public void saveGame() {
+        try (BufferedWriter bw = new BufferedWriter(
+                new FileWriter("src/samegame/savedata.txt"))) {
+            
+            bw.write(board.getRows() + "\n");
+            bw.write(board.getCols() + "\n");
+            bw.write(score + "\n");
+            
+            for (int y = 0; y < board.getRows(); y++) {
+                for (int x = 0; x < board.getCols(); x++) {
+                    bw.write(board.getTileAt(y, x).getState() + " ");
+                }
+                bw.write("\n");
+            }
+            
+        } catch (IOException e) {
+            System.err.println("Error saving game: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void loadGame(File f) {
+        try (BufferedReader br = new BufferedReader(
+            new FileReader("src/samegame/savedata.txt"))) {
+        int[][] state = new int[board.getRows()][board.getCols()];
+        score = br.
+
+        for (int y = 0; y < board.getRows(); y++) {
+            for (int x = 0; x < board.getCols(); x++) {
+                bw.write(board.getTileAt(y, x).getState() + " ");
+            }
+            bw.write("\n");
+        }
+        
+    } catch (IOException e) {
+        System.err.println("Error saving game: " + e.getMessage());
+    }
     }
 
     @Override

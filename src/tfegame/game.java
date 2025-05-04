@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import tfegame.controller.TFEGameController;
 import tfegame.model.TFEGameBoard;
 import tfegame.model.TFEGameModel;
+import tfegame.view.TFEGameConsoleView;
 import tfegame.view.TFEGameView;
 
 public class game {
@@ -16,9 +17,11 @@ public class game {
         TFEGameBoard board = new TFEGameBoard();
         TFEGameModel model = new TFEGameModel(board);
         TFEGameView view = new TFEGameView(model);
-
+        TFEGameConsoleView consoleview = new TFEGameConsoleView(model);
+        
         model.addObserver(view);
-
+        model.addObserver(consoleview);
+        
         TFEGameController controller = new TFEGameController(model, view);
 
         view.setFocusable(true);
@@ -27,7 +30,7 @@ public class game {
                 controller.keyInput(e);
             }
         });
-        frame.setResizable(false);
+        //frame.setResizable(false);
         frame.add(view);
         frame.pack();
         frame.setLocationRelativeTo(null);

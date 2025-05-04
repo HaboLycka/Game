@@ -5,8 +5,8 @@ import framework.model.GameTile;
 import java.awt.*;
 
 public class SameGameBoard implements GameBoard{
-    private final int rows = 5;
-    private final int cols = 5;
+    private final int rows = 15;
+    private final int cols = 25;
     private int difficulty;
     private GameTile[][] tiles;
     private final Color[] colors = { Color.MAGENTA, Color.CYAN, Color.DARK_GRAY, Color.ORANGE, Color.PINK};

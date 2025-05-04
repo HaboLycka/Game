@@ -42,14 +42,18 @@ public class TFEGameBoard implements GameBoard{
         int r1 = (int)(Math.random() * rows);
         int c1 = (int)(Math.random() * cols);
 
-        int r2 = (int)(Math.random() * rows);
-        int c2 = (int)(Math.random() * cols);
+        int r2, c2;
+
+        do {
+            r2 = (int)(Math.random() * rows);
+            c2 = (int)(Math.random() * cols);
+        } while (r2 == r1 && c2 == c1);
 
         tiles[r1][c1].setColor(colors[1]);
         tiles[r1][c1].setState(1);
         
         tiles[r2][c2].setColor(colors[1]);
-        tiles[r1][c1].setState(1);
+        tiles[r2][c2].setState(1);
         
     }
 

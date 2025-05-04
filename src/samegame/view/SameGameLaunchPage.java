@@ -34,8 +34,8 @@ public class SameGameLaunchPage extends GameLaunchPage {
         model.addObserver(view);
         SameGameController controller = new SameGameController(model, view);
         
-        JFrame gameFrame = new JFrame("SameGame");
-        gameFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JFrame frame = new JFrame("SameGame");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
         view.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -50,12 +50,24 @@ public class SameGameLaunchPage extends GameLaunchPage {
             }
         });
         
-        gameFrame.setResizable(false);
-        gameFrame.add(view);
-        gameFrame.pack();
-        gameFrame.setLocationRelativeTo(null);
-        gameFrame.setVisible(true);
-        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.add(view);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                displayLaunchPage();
+            }
+        });
+        
         this.setVisible(false);
+    }
+
+    private void displayLaunchPage() {
+        this.setVisible(true);
     }
 }

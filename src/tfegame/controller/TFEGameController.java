@@ -22,16 +22,16 @@ public class TFEGameController implements GameController{
             model.keyMove(0);
             break;
 
+            case KeyEvent.VK_DOWN:
+            model.keyMove(1);
+            break;
+
             case KeyEvent.VK_LEFT:
-            //model.keyMove();
+            model.keyMove(2);
             break;
 
             case KeyEvent.VK_RIGHT:
-            //model.keyMove();
-            break;
-
-            case KeyEvent.VK_DOWN:
-            //model.keyMove()
+            model.keyMove(3);
             break;
             case KeyEvent.VK_R:
             model.restartGame();

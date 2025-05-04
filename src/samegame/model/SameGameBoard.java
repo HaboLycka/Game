@@ -2,12 +2,11 @@ package samegame.model;
 
 import framework.model.GameBoard;
 import framework.model.GameTile;
-
 import java.awt.*;
 
 public class SameGameBoard implements GameBoard{
-    private final int rows = 15;
-    private final int cols = 25;
+    private final int rows = 5;
+    private final int cols = 5;
     private int difficulty;
     private GameTile[][] tiles;
     private final Color[] colors = { Color.MAGENTA, Color.CYAN, Color.DARK_GRAY, Color.ORANGE, Color.PINK};
@@ -28,7 +27,7 @@ public class SameGameBoard implements GameBoard{
     }
 
     @Override
-    public void initializeBoard(int rows, int cols, int difficulty) {
+    public void initializeBoard() {
         tiles = new GameTile[rows][cols];
         // initialize the board by setting random
         for (int row = 0; row < rows; row++) {
@@ -41,9 +40,10 @@ public class SameGameBoard implements GameBoard{
 
     @Override
     public void resetBoard() {
-        initializeBoard(rows, cols, difficulty);
+        initializeBoard();
     }
 
+    @Override
     public Color getColor(int index) {
         if (index >= 0 && index < colors.length) return colors[index];
         return null;
@@ -53,6 +53,6 @@ public class SameGameBoard implements GameBoard{
         if (difficulty > 5) difficulty = 5;
         if (difficulty < 3) difficulty = 3;
         this.difficulty = difficulty;
-        initializeBoard(rows, cols, difficulty);
+        initializeBoard();
     }
 }

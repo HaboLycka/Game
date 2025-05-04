@@ -1,17 +1,20 @@
 package samegame.view;
 
-import framework.model.GameBoard;
+import framework.model.GameModel;
 import framework.view.GameObserver;
 import framework.view.GameView;
 
 public class SameGameConsoleView implements GameView, GameObserver{
 
-    private GameBoard board;
+    private GameModel model;
     private int width;
     private int height;
 
     @Override
     public void update() {
+        if (model.isGameOver()) {
+            printGameOver();
+        }
         printBoard();
     }
 
@@ -37,20 +40,27 @@ public class SameGameConsoleView implements GameView, GameObserver{
 
     public void printBoard() {
 
+        System.out.println(model.getScore());
+
         for (int y = 0; y < height; y++) {
             System.out.print("|");
             for (int x = 0; x < width; x++) {
-                System.out.print(board.getTileAt(y, x).getState() + " ");
+                System.out.print(model.getTileAt(y, x).getState() + " ");
             }
             System.out.println("|");
         }
-
         System.out.println("\n");
     }
-
-    public SameGameConsoleView(GameBoard board) {
-        this.board = board;
-        this.height = board.getRows();
-        this.width = board.getCols();
+    
+    private void printGameOver() {
+        if (model.isGameWon())
+            System.out.println("You Win! \nScore:" + model.getScore());
+        else
+            System.out.println("No more moves, You Lose!\nScore: " + model.getScore());
+    }
+    public SameGameConsoleView(GameModel model) {
+        this.model = model;
+        this.height = model.getRows();
+        this.width = model.getCols();
     }
 }

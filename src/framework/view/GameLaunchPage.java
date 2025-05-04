@@ -1,6 +1,9 @@
 package framework.view;
 
 import javax.swing.*;
+
+import framework.model.GameModel;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -8,12 +11,11 @@ public abstract class GameLaunchPage extends JFrame {
     JButton startButton;
     JButton loadButton;
     JButton quitButton;
-
-    JPanel textpanel;
     
-    public abstract void startGame();
+    public abstract void newGame();
     public abstract void loadGame();
-    
+    public abstract void startGame(GameModel model);
+
     public GameLaunchPage() {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -26,7 +28,7 @@ public abstract class GameLaunchPage extends JFrame {
         startButton.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				startGame();				
+				newGame();				
 			}
 		});
         
@@ -54,18 +56,8 @@ public abstract class GameLaunchPage extends JFrame {
         
         buttons.add(buttonPanel);
         this.add(buttons, BorderLayout.CENTER);
-
-        textpanel = new JPanel();
-        JTextArea info = new JTextArea("Enter difficulty (3 - 5)");
-        info.setEditable(false);
-        JTextField diff = new JTextField("3");
         
-        textpanel.add(info, BorderLayout.CENTER);
-        textpanel.add(diff, BorderLayout.SOUTH);
-
-        add(textpanel, BorderLayout.SOUTH);
-        
-        setSize(400, 300);
+        setSize(200, 300);
         setLocationRelativeTo(null);
         setResizable(false);
     }

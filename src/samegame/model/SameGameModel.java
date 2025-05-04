@@ -4,20 +4,21 @@ import framework.model.GameBoard;
 import framework.model.GameModel;
 import framework.model.GameTile;
 import framework.view.GameObserver;
-
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.ArrayList;
 
 public class SameGameModel implements GameModel {
 
     private List<GameObserver> observers = new ArrayList<>();
     private GameBoard board;
     private int score = 0;
+    private boolean gameWon = false;
+    private boolean gameLost = false;
     private List<int[][]> storedStates = new ArrayList<>();
-    private List<Integer> storedScore = new ArrayList<>();
+    private List<Integer> storedScores = new ArrayList<>();
 
     @Override
     public void addObserver(GameObserver observer) {
@@ -31,7 +32,6 @@ public class SameGameModel implements GameModel {
 
     @Override
     public void notifyObservers() {
-        saveGame();
         for (GameObserver o : observers) {
             o.update();
         }
@@ -77,11 +77,12 @@ public class SameGameModel implements GameModel {
                 int[][] states = new int[board.getRows()][board.getCols()];
 
                 for (int row = 0; row < board.getRows(); row++) 
-                    for (int col = 0; col < board.getCols(); col++) {
+                    for (int col = 0; col < board.getCols(); col++)
                         states[row][col] = sc.nextInt();
-                    }
                 sc.close();
-                loadGameFromState(states, score);
+                storedStates.add(states);
+                storedScores.add(score);
+                loadGameFromStoredStates();
                 notifyObservers();
                 return true;
             }
@@ -143,11 +144,13 @@ public class SameGameModel implements GameModel {
     }
 
     public void undo() {
-        if (storedStates.size() > 0 && storedScore.size() > 0)
-            loadGameFromState(storedStates.removeLast(), storedScore.removeLast());
+        loadGameFromStoredStates();
     }
 
-    public void loadGameFromState(int[][] state, int score) {
+    public void loadGameFromStoredStates() {
+        if (storedStates.size() <= 0 && storedScores.size() <= 0) return;
+        int[][] state = storedStates.removeLast();
+        int score = storedScores.removeLast();
         this.score = score;
         for (int row = 0; row < board.getRows(); row++) {
             for (int col = 0; col < board.getCols(); col++) {
@@ -162,14 +165,23 @@ public class SameGameModel implements GameModel {
         notifyObservers();
     }
     @Override
-    public void makeMove(int row, int col) {
+    public void keyMove(int direction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'keyMove'");
+    }
+
+    @Override
+    public void clickMove(int row, int col) {
+        
+        if (gameWon || gameLost) return;
+        
         List<Point> group = new ArrayList<>();
         int state = board.getTileAt(row, col).getState();
         // recurively adds all matching neighbour of the same colour
         findCluster(group, row, col, state);
         int n = group.size();
         if (n >= 2) {
-            savePreviousState();
+            saveStates();
             for (Point p : group) {
                 board.getTileAt(p.y, p.x).setColor(Color.WHITE);
                 board.getTileAt(p.y, p.x).setState(0);
@@ -181,9 +193,29 @@ public class SameGameModel implements GameModel {
         // Tiles go left
         compact();
 
+        if(board.getTileAt(board.getRows() - 1, 0).isEmpty())
+            gameWon = true;
+
+        if (findLargestCluster().size() < 2 && !gameWon)
+            gameLost = true;
+        saveGame();
         notifyObservers();
     }
 
+    @Override
+    public boolean isGameWon() {
+        return gameWon;
+    }
+
+    @Override
+    public boolean isGameLost() {
+        return gameLost;
+    }
+
+    @Override
+    public boolean isGameOver() {
+        return gameLost || gameWon;
+    }
     private void collapse() {
         for (int col = 0; col < board.getCols(); col++) {
             for (int row = board.getRows() - 1; row >= 0; row--) {
@@ -249,6 +281,8 @@ public class SameGameModel implements GameModel {
     }
 
     public void cheat() {
+        saveStates();
+        loadGameFromStoredStates();
         List<Point> largestcluster = findLargestCluster();
         int n = largestcluster.size();
         if (n >= 2) {
@@ -289,28 +323,38 @@ public class SameGameModel implements GameModel {
     private List<Point> findLargestCluster() {
         List<List<Point>> clusters = new ArrayList<>();
 
+        // Go through every tile on the board
         for (int row = 0; row < board.getRows(); row++) {
             for (int col = 0; col < board.getCols(); col++) {
                 GameTile tile = board.getTileAt(row, col);
                 if (tile.isEmpty())
-                    break;
+                    continue;
 
+                // Check if tile cluster has already been added
+                boolean alreadyFound = false;
                 for (List<Point> c : clusters) {
                     for (Point pos : c) {
-                        if (pos.x == col && pos.y == row)
+                        if (pos.x == col && pos.y == row) {
+                            alreadyFound = true;
                             break;
+                        }
                     }
+                    if (alreadyFound) break;
                 }
-                List<Point> cluster = new ArrayList<>();
-                int state = tile.getState();
-                findCluster(cluster, row, col, state);
-                if (!cluster.isEmpty())
-                    clusters.add(cluster);
+                
+                // If it hasn't add the cluster to the clusters
+                if (!alreadyFound) {
+                    List<Point> cluster = new ArrayList<>();
+                    int state = tile.getState();
+                    findCluster(cluster, row, col, state);
+                    if (!cluster.isEmpty())
+                        clusters.add(cluster);
+                }
             }
         }
 
+        // Find the largest cluster and return it
         List<Point> largest = new ArrayList<>();
-
         for (List<Point> p : clusters) {
             if (p.size() > largest.size())
                 largest = p;
@@ -319,7 +363,7 @@ public class SameGameModel implements GameModel {
         return largest;
     }
     
-    public void savePreviousState() {
+    public void saveStates() {
         int[][] s = new int[board.getRows()][board.getCols()];
         
         for (int row = 0; row < board.getRows(); row++) {
@@ -328,11 +372,10 @@ public class SameGameModel implements GameModel {
             }
         }
         storedStates.add(s);
-        storedScore.add(score);
+        storedScores.add(score);
     }
 
     public SameGameModel(GameBoard board) {
         this.board = board;
-
     }
 }

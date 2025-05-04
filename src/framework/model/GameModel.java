@@ -1,8 +1,7 @@
 package framework.model;
 
-import java.io.FileNotFoundException;
-
 import framework.view.GameObserver;
+import java.io.FileNotFoundException;
 
 public interface GameModel {
     void addObserver(GameObserver observer);
@@ -15,7 +14,12 @@ public interface GameModel {
     public int getCols();
     GameTile getTileAt(int row, int col);
     int getScore();
-    void makeMove(int row, int col);
+    void clickMove(int row, int col);
+    void keyMove(int direction);
     void cheat();
     void undo();
+
+    public boolean isGameWon();
+    public boolean isGameLost();
+    public boolean isGameOver();
 }

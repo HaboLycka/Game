@@ -1,14 +1,12 @@
 package samegame.view;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-
-import javax.swing.*;
-
 import framework.model.GameModel;
 import framework.view.GameObserver;
 import framework.view.GameView;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import javax.swing.*;
 
 public class SameGameView extends JPanel implements GameView, GameObserver {
 
@@ -80,18 +78,33 @@ public class SameGameView extends JPanel implements GameView, GameObserver {
 
     private void drawScore(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawString("Score: " + model.getScore(), 10, getHeight() - 10);
+        g.drawString("Score: " + model.getScore(), 10, 50);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        drawGrid(g);
-        drawTiles(g);
-        drawScore(g);
+        if (model.isGameOver()) {
+            drawGameOver(g);
+        }
+        else {
+            drawGrid(g);
+            drawTiles(g);
+            drawScore(g);  
+        }
     }
 
+    private void drawGameOver(Graphics g) {
+        if (model.isGameOver()) {
+            g.setColor(Color.BLACK);
+            g.drawString("Score: " + model.getScore(), tilesize, height / 2);
+            if (model.isGameWon())
+                g.drawString("You Win!", tilesize, height / 2 + 15);
+            else 
+                g.drawString("No more moves, You Lose!", tilesize, height / 2 + 15);
+        }
+    }
     public SameGameView(GameModel model) {
         this.model = model;
         this.height = model.getRows() * tilesize;

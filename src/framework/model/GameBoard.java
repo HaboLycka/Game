@@ -7,6 +7,6 @@ public interface GameBoard {
     int getCols();
     GameTile getTileAt(int row, int col);
     void resetBoard();
-    void initializeBoard(int rows, int cols, int difficulty);
-    Color getColor(int i);
+    void initializeBoard();
+    Color getColor(int index);
 }

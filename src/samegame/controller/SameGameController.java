@@ -16,7 +16,7 @@ public class SameGameController implements GameController{
     public void mouseInput(MouseEvent e) {
         int row = e.getY() / view.getTileSize();
         int col = e.getX() / view.getTileSize();
-        model.makeMove(row, col);
+        model.clickMove(row, col);
     }
 
     @Override

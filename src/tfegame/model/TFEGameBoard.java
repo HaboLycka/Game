@@ -31,6 +31,15 @@ public class TFEGameBoard implements GameBoard{
         initializeBoard();
     }
 
+    public int emptyTiles() {
+        int counter = 0;
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (tiles[row][col].isEmpty()) counter++;
+            }
+        }
+        return counter;
+    }
     @Override
     public void initializeBoard() {
         tiles = new GameTile[rows][cols];
@@ -54,7 +63,6 @@ public class TFEGameBoard implements GameBoard{
         
         tiles[r2][c2].setColor(colors[1]);
         tiles[r2][c2].setState(1);
-        
     }
 
     @Override

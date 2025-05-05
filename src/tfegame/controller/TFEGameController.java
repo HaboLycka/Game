@@ -1,11 +1,10 @@
 package tfegame.controller;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-
 import framework.controller.GameController;
 import framework.model.GameModel;
 import framework.view.GameView;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 public class TFEGameController implements GameController{
 

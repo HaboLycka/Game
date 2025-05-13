@@ -17,6 +17,8 @@ public class SameGameController implements GameController{
         int row = e.getY() / view.getTileSize();
         int col = e.getX() / view.getTileSize();
         model.clickMove(row, col);
+
+
     }
 
     @Override

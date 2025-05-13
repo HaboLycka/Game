@@ -346,6 +346,11 @@ public class TFEGameModel implements GameModel {
         t2.setColor(c);
         t2.setState(state);
     }
+
+    public Color getColor(int index) {
+        return board.getColor(index);
+    }
+
     @Override
     public void clickMove(int row, int col) {
         

@@ -1,6 +1,7 @@
 package framework.model;
 
 import framework.view.GameObserver;
+
 import java.io.FileNotFoundException;
 
 public interface GameModel {

@@ -2,14 +2,12 @@ package tfegame.controller;
 
 import framework.controller.GameController;
 import framework.model.GameModel;
-import framework.view.GameView;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class TFEGameController implements GameController{
 
     private GameModel model;
-    private GameView view;
 
     @Override
     public void mouseInput(MouseEvent e) {}
@@ -41,8 +39,7 @@ public class TFEGameController implements GameController{
         }
     }
     
-    public TFEGameController(GameModel model, GameView view) {
+    public TFEGameController(GameModel model) {
         this.model = model;
-        this.view = view;
     }
 }

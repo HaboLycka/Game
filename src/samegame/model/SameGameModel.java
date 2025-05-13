@@ -10,26 +10,58 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 public class SameGameModel implements GameModel {
 
+    /** List of observers that will be notified of game state changes */
     private List<GameObserver> observers = new ArrayList<>();
+    
+    /** The game board containing the tiles */
     private GameBoard board;
+    
+    /** Current score */
     private int score = 0;
+    
+    /** Flag indicating if the game has been won */
     private boolean gameWon = false;
+    
+    /** Flag indicating if the game has been lost */
     private boolean gameLost = false;
+    
+    /** Stored game states for undo functionality */
     private List<int[][]> storedStates = new ArrayList<>();
+    
+    /** Stored scores for undo functionality */
     private List<Integer> storedScores = new ArrayList<>();
 
+    /**
+     * Adds an observer to be notified of game state changes.
+     * 
+     * @param observer The observer to add
+     */
     @Override
     public void addObserver(GameObserver observer) {
         observers.add(observer);
     }
 
+    /**
+     * Removes an observer from the notification list.
+     * 
+     * @param observer The observer to remove
+     */
     @Override
     public void removeObserver(GameObserver observer) {
         observers.remove(observer);
     }
 
+    /**
+     * Notifies all registered observers of a game state change.
+     */
     @Override
     public void notifyObservers() {
         for (GameObserver o : observers) {
@@ -37,10 +69,14 @@ public class SameGameModel implements GameModel {
         }
     }
 
+    /**
+     * Saves the current game state to a file.
+     * Saves the score and the state of each tile on the board.
+     */
     @Override
     public void saveGame() {
         try (BufferedWriter bw = new BufferedWriter(
-                new FileWriter("src/samegame/savedata.txt"))) {
+                new FileWriter("Game/src/samegame/savedata.txt"))) {
             bw.write(score + "\n");
 
             for (int y = 0; y < board.getRows(); y++) {
@@ -55,9 +91,14 @@ public class SameGameModel implements GameModel {
         }
     }
 
+    /**
+     * Loads a saved game state from a file.
+     * 
+     * @return true if the game was successfully loaded, false otherwise
+     */
     @Override
     public boolean loadGame() {
-        File f = new File("src/samegame/savedata.txt");
+        File f = new File("Game/src/samegame/savedata.txt");
 
         if (!f.exists()) {
             System.out.println("No Previous Game Found");
@@ -95,6 +136,13 @@ public class SameGameModel implements GameModel {
         }
     }
 
+    /**
+     * Checks if a save file is valid for loading.
+     * 
+     * @param f The save file to check
+     * @return true if the file is valid, false otherwise
+     * @throws FileNotFoundException if the file doesn't exist
+     */
     private boolean isFileValid(File f) throws FileNotFoundException {
         int counter = 0;
         Scanner sc = new Scanner(f);
@@ -116,26 +164,51 @@ public class SameGameModel implements GameModel {
         return counter == board.getRows() * board.getCols();
     }
 
+    /**
+     * Gets the current score.
+     * 
+     * @return The current score
+     */
     @Override
     public int getScore() {
         return score;
     }
 
+    /**
+     * Gets the number of rows in the game board.
+     * 
+     * @return The number of rows
+     */
     @Override
     public int getRows() {
         return board.getRows();
     }
 
+    /**
+     * Gets the number of columns in the game board.
+     * 
+     * @return The number of columns
+     */
     @Override
     public int getCols() {
         return board.getCols();
     }
 
+    /**
+     * Gets the tile at the specified position.
+     * 
+     * @param row The row index
+     * @param col The column index
+     * @return The GameTile at the specified position
+     */
     @Override
     public GameTile getTileAt(int row, int col) {
         return board.getTileAt(row, col);
     }
 
+    /**
+     * Restarts the game by resetting the board and score.
+     */
     @Override
     public void restartGame() {
         board.resetBoard();
@@ -143,10 +216,17 @@ public class SameGameModel implements GameModel {
         notifyObservers();
     }
 
+    /**
+     * Undoes the last move by restoring the previous game state.
+     */
     public void undo() {
         loadGameFromStoredStates();
     }
 
+    /**
+     * Loads a game state from the stored states stack.
+     * Used for undoing moves.
+     */
     public void loadGameFromStoredStates() {
         if (storedStates.size() <= 0 && storedScores.size() <= 0) return;
         int[][] state = storedStates.removeLast();
@@ -164,12 +244,26 @@ public class SameGameModel implements GameModel {
         }
         notifyObservers();
     }
+    
+    /**
+     * Handles keyboard movement input.
+     * Not implemented for SameGame.
+     * 
+     * @param direction The direction of the key move
+     */
     @Override
     public void keyMove(int direction) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'keyMove'");
+        return;
     }
 
+    /**
+     * Processes a click move at the specified position.
+     * If a valid group of matching tiles is found, they are removed and the score is updated.
+     * After removing tiles, the remaining tiles are collapsed downward and compacted leftward.
+     * 
+     * @param row The row index of the click
+     * @param col The column index of the click
+     */
     @Override
     public void clickMove(int row, int col) {
         
@@ -177,17 +271,17 @@ public class SameGameModel implements GameModel {
         
         List<Point> group = new ArrayList<>();
         int state = board.getTileAt(row, col).getState();
-        // recurively adds all matching neighbour of the same colour
+        // recursively adds all matching neighbours of the same colour
         findCluster(group, row, col, state);
         int n = group.size();
-        if (n >= 2) {
-            saveStates();
-            for (Point p : group) {
-                board.getTileAt(p.y, p.x).setColor(Color.WHITE);
-                board.getTileAt(p.y, p.x).setState(0);
-            }
-            score += (n - 2) * (n - 2);
+
+        if (n < 2) return;
+        saveStates();
+        for (Point p : group) {
+            board.getTileAt(p.y, p.x).setColor(Color.WHITE);
+            board.getTileAt(p.y, p.x).setState(0);
         }
+            score += (n - 2) * (n - 2);
         // Tiles go down
         collapse();
         // Tiles go left
@@ -199,6 +293,7 @@ public class SameGameModel implements GameModel {
         if (findLargestCluster().size() < 2 && !gameWon)
             gameLost = true;
         saveGame();
+        playsound();
         notifyObservers();
     }
 
@@ -287,7 +382,7 @@ public class SameGameModel implements GameModel {
         int n = largestcluster.size();
         if (n >= 2) {
             for (Point p : largestcluster) {
-                board.getTileAt(p.y, p.x).setColor(Color.blue);
+                board.getTileAt(p.y, p.x).setColor(Color.ORANGE);
             }
             score += (n - 2) * (n - 2);
         }
@@ -375,7 +470,27 @@ public class SameGameModel implements GameModel {
         storedScores.add(score);
     }
 
+    private void playsound() {
+        try {
+
+            java.net.URL audioUrl = getClass().getClassLoader().getResource("samegame/eventAudio.wav");
+            if (audioUrl == null) {
+                System.err.println("Could not find audio file");
+                return;
+            }
+            AudioInputStream audio = AudioSystem.getAudioInputStream(audioUrl);
+            Clip clip = AudioSystem.getClip(); 
+            clip.open(audio);
+            clip.start();
+        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e1) {
+        }
+    }
+
     public SameGameModel(GameBoard board) {
         this.board = board;
+    }
+
+    public Color getColor(int index) {
+        return board.getColor(index);
     }
 }

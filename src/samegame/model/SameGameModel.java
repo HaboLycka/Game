@@ -213,6 +213,8 @@ public class SameGameModel implements GameModel {
     public void restartGame() {
         board.resetBoard();
         score = 0;
+        gameWon = false;
+        gameLost = false;
         notifyObservers();
     }
 
